@@ -1,5 +1,6 @@
 import fs from 'fs';
-import splitTokens from '../../../util/splitTokens-js/src/splitTokens.js'
+import splitTokens from '../../../../util/splitTokens-js/src/splitTokens.js'
+
 // 入力処理
 const input = splitTokens(fs.readFileSync(0, 'utf8')); //const input = splitTokens(require('fs').readFileSync(0, 'utf8'));
 const [[n], ...rest] = input;
