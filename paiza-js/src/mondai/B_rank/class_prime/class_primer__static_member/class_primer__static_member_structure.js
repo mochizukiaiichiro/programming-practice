@@ -4,6 +4,7 @@ import splitTokens from '../../../../util/splitTokens-js/src/splitTokens.js'
 // 定数
 const BEER_PRICE = 500;
 const FOOD_DISCOUNT = 200;
+const LEGAL_DRINKING_AGE = 20;
 const ORDER_BEER = 0;
 const ORDER_FOOD = 'food';
 const ORDER_SOFT = 'softdrink';
@@ -23,40 +24,25 @@ const users = rest.slice(0, n).map(([old]) => ({
 
 const accounting = [];
 
+// 注文と処理のマッピング
+const orderActions = {
+	[ORDER_BEER]: (u) => { if (u.old >= LEGAL_DRINKING_AGE) { u.payment.push(BEER_PRICE); u.discount = true; } },
+	[ORDER_FOOD]: (u, amt) => { u.payment.push(u.discount ? amt - FOOD_DISCOUNT : amt) },
+	[ORDER_SOFT]: (u, amt) => { u.payment.push(amt); },
+	[ORDER_ALCOHOL]: (u, amt) => { if (u.old >= LEGAL_DRINKING_AGE) { u.payment.push(amt); u.discount = true; } },
+	[ORDER_CHECKOUT]: (u) => {
+		const total = u.payment.reduce((sum, cur) => sum + cur, 0);
+		accounting.push(total);
+		// 状態をリセット
+		u.discount = false;
+		u.payment = [];
+	},
+}
+
 // 注文処理
 rest.slice(n).forEach(([id, order, orderAmount]) => {
 	const user = users[id - 1];
-
-	// ビール
-	if (order === ORDER_BEER && user.old >= 20) {
-		user.payment.push(BEER_PRICE);
-		user.discount = true;
-	}
-
-	// 食事
-	if (order === ORDER_FOOD) {
-		user.payment.push(user.discount ? orderAmount - FOOD_DISCOUNT : orderAmount)
-	}
-
-	// ソフトドリンク
-	if (order === ORDER_SOFT) {
-		user.payment.push(orderAmount);
-	}
-
-	// アルコール
-	if (order === ORDER_ALCOHOL && user.old >= 20) {
-		user.payment.push(orderAmount);
-		user.discount = true;
-	}
-
-	// 会計をして退店
-	if (order === ORDER_CHECKOUT) {
-		const total = user.payment.reduce((sum, cur) => sum + cur, 0);
-		accounting.push(total);
-		// 状態をリセット
-		user.discount = false;
-		user.payment = [];
-	}
+	orderActions[order]?.(user, orderAmount);
 });
 
 // 出力処理
