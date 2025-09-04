@@ -26,10 +26,10 @@ const accounting = [];
 
 // 注文と処理のマッピング
 const orderActions = {
-	[ORDER_BEER]: (u) => { if (u.old >= LEGAL_DRINKING_AGE) { u.payment.push(BEER_PRICE); u.discount = true; } },
-	[ORDER_FOOD]: (u, amt) => { u.payment.push(u.discount ? amt - FOOD_DISCOUNT : amt) },
 	[ORDER_SOFT]: (u, amt) => { u.payment.push(amt); },
+	[ORDER_BEER]: (u) => { if (u.old >= LEGAL_DRINKING_AGE) { u.payment.push(BEER_PRICE); u.discount = true; } },
 	[ORDER_ALCOHOL]: (u, amt) => { if (u.old >= LEGAL_DRINKING_AGE) { u.payment.push(amt); u.discount = true; } },
+	[ORDER_FOOD]: (u, amt) => { u.payment.push(u.discount ? amt - FOOD_DISCOUNT : amt) },
 	[ORDER_CHECKOUT]: (u) => {
 		const total = u.payment.reduce((sum, cur) => sum + cur, 0);
 		accounting.push(total);
