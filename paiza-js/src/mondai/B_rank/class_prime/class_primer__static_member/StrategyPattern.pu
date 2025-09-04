@@ -1,0 +1,42 @@
+@startuml
+title クラス図
+
+' ===== ユーザクラス =====
+class User {
+  - age: number
+  - discount: boolean
+  - payment: number[]
+  - strategy: BaseOrderStrategy
+  + order(type: any, amount: number): void
+  --
+  {static} totalCustomers: number
+  {static} addSale(amount: number): void
+  {static} getSalesList(): number[]
+}
+
+' ===== 基底戦略クラス =====
+class BaseOrderStrategy {
+  + execute(user: User, type: any, amount: number): void
+  # handleSpecificOrder(user: User, type: any, amount: number): void
+}
+
+' ===== 具体戦略 =====
+class MinorOrderStrategy {
+  + handleSpecificOrder(user: User, type: any, amount: number): void
+}
+
+class AdultOrderStrategy {
+  + handleSpecificOrder(user: User, type: any, amount: number): void
+}
+
+' ===== Factory =====
+class UserFactory {
+  + create(age: number): User
+}
+
+' ===== 関係 =====
+BaseOrderStrategy <|-- MinorOrderStrategy
+BaseOrderStrategy <|-- AdultOrderStrategy
+User --> BaseOrderStrategy
+UserFactory --> User
+@enduml
