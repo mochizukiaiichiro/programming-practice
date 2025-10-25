@@ -1,0 +1,46 @@
+@startuml
+title 注文処理システム クラス図（if文方式＋MapUserManager）
+
+class User {
+  - age: number
+  - discount: boolean
+  - payment: number[]
+  - strategy: BaseOrderStrategy
+  + order(type: any, amount: number): void
+  --
+  {static} totalCustomers: number
+  {static} addSale(amount: number): void
+  {static} getSalesList(): number[]
+}
+
+class BaseOrderStrategy {
+  + execute(user: User, type: any, amount: number): void
+  # handleSpecificOrder(user: User, type: any, amount: number): void
+}
+
+class MinorOrderStrategy {
+  + handleSpecificOrder(user: User, type: any, amount: number): void
+}
+
+class AdultOrderStrategy {
+  + handleSpecificOrder(user: User, type: any, amount: number): void
+}
+
+class UserFactory {
+  + create(age: number): User
+}
+
+class MapUserManager {
+  - users: Map<number, User>
+  + hasUser(id: number): boolean
+  + createUser(id: number, userInstance: User): void
+  + getUser(id: number): User
+  + removeUser(id: number): void
+}
+
+BaseOrderStrategy <|-- MinorOrderStrategy
+BaseOrderStrategy <|-- AdultOrderStrategy
+User --> BaseOrderStrategy
+UserFactory --> User
+MapUserManager --> User
+@enduml

@@ -1,0 +1,40 @@
+@startuml
+title 注文処理シーケンス（MapUserManager利用）
+
+actor Main
+participant "MapUserManager" as M
+participant "UserFactory" as F
+participant "User" as U
+participant "BaseOrderStrategy" as S
+participant "Minor/Adult Strategy" as CS
+participant "User(静的集計)" as UC
+
+Main -> M: hasUser(id)
+alt ユーザ未作成
+    Main -> F: create(age)
+    F --> Main: Userインスタンス
+    Main -> M: createUser(id, user)
+end
+
+Main -> M: getUser(id)
+M --> Main: Userインスタンス
+
+Main -> U: order(type, amount)
+U -> S: execute(this, type, amount)
+
+alt typeがORDER_SOFT
+    S -> U: payment.push(amount)
+else typeがORDER_CHECKOUT
+    S -> U: 合計計算
+    S -> UC: totalCustomers++
+    S -> UC: addSale(total)
+    S -> U: payment = []
+    S -> U: discount = false
+    Main -> M: removeUser(id)
+else その他注文
+    S -> CS: handleSpecificOrder(user, type, amount)
+    CS -> U: payment.push(...) / discount更新
+end
+
+Main <-- U: 処理完了
+@enduml

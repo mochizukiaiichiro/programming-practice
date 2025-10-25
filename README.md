@@ -13,14 +13,14 @@ Paiza や AtCoder などのオンラインジャッジや書籍のプログラ�
 
 ```text
 programming-practice/
-└─paiza-js                              # Paiza問題（JavaScript）
+├─paiza-js                        # Paiza問題（JavaScript）
+│  └─src
+│      ├─mondai                  # 回答
+│      │  ├─B_rank              # Bランク獲得
+│　　　…
+└─paiza-js                        # Paiza問題（Python）
     └─src
-        ├─mondai                        # 解答
-        │  ├─B_rank                    # Bランク獲得
-        │  └─class_prime               # クラス・構造体メニュー
-        │      └─class_primer__change  # 構造体の更新
-        ├─test
-        └─util
-            └─splitTokens-js
-                └─src
+        ├─mondai                  # 回答
+        │  ├─B_rank              # Bランク獲得
+　　　　…
 ```
